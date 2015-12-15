@@ -1,0 +1,27 @@
+{
+	"src": {
+		"html": "app/*.html",
+		"scss": "app/styles/*.scss",
+		"js": "app/scripts/*.js",
+		"images": "app/images/*.{jpg,png,svg}"
+	},
+	"dist": {
+		"css": "dist/styles/*.css",
+		"js": "dist/scripts/*.js",
+		"html": "dist/*.html"
+	},
+	"staticAssets": {
+		"staticjs": [
+	        "http://static.ftchinese.com/js/jquery-1.11.3.min.js"
+	    ],
+	    "log": "http://static.ftchinese.com/js/log.js?v=6"
+	},
+	"deploy": {
+		"htmlDest": "../deploy/dev_www/frontend/tpl/special/",
+		"assetsDest": "../ft-interact/"
+	},
+	"test": {
+		"dest": "../interact/"
+	},
+	"prefixUrl": "http://interactive.ftchinese.com/"
+}

@@ -1,0 +1,114 @@
+/* General */
+.text-over-media {
+  color: $white;
+  h1 {
+      font-size: 100px;
+      line-height: 1.2;
+  }
+  h2 {
+      font-size: 82px
+  }
+  p {
+      font-size: 33.6px;
+      margin: 0 auto;
+  }
+  @include background-setting(fixed);
+  &::before {
+    @include background-overlay;
+  }
+}
+.text-wrapper {
+    max-width: 600px;
+    padding: 5%;
+}
+.content-column  {
+  max-width: 600px;
+  margin: 0 auto;
+  p {
+    margin: .75em auto;
+  }
+  aside {
+    text-align: center;
+  }
+}
+
+/* Story header */
+.cover-image {
+  display: none;
+}
+.story-cover {
+  h1 {
+    margin: 0;
+  }
+  padding-bottom: 60px;
+  box-sizing: border-box;
+  .text-wrapper {
+    text-shadow: $textShadow-1;
+    text-align: center;
+    margin: 0 auto;
+  }
+  %byline {
+    font-size: 18px;
+  }
+  .lead {
+    padding: 0;
+    margin: 1em 0 0 0;
+    @extend %byline;
+  }
+  .byline {
+    @extend %byline;
+    font-style: italic;
+    padding: 0;
+    margin: 1em 0 0 0;
+  }
+  .swipe-down {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      text-align: center; 
+      padding-bottom: 50px;
+      &::before {
+        content: "向下滚动";
+        display: block;
+        font-size: 14px;
+        color: #FFF;
+        width: 72px;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        margin-left: -36px
+      }
+      &::after {
+        content: "";
+        display: block;
+        width: 72px;
+        height: 20px;
+        position: absolute;
+        left: 50%;
+        bottom: 0px;    
+        margin-left: -36px;   
+        background-image:sassvg(arrow-down, $fillcolor: $white);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 50px;
+      }
+    }
+}
+
+.related-reading {
+
+  h4 {
+    margin: 1em 0 0 0;
+  }
+}
+
+/* story footer */
+.story-footer {
+    @include background-setting(fixed);
+    p {
+        max-width: 600px;
+        text-align: center;
+        margin: 0 auto;
+        padding-top: 5em;
+    }
+}

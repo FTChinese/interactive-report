@@ -1,0 +1,1 @@
+!function(e,t,a,n,c,r,s){e.FtcAnalyticsObject=c,e[c]=e[c]||function(){(e[c].q=e[c].q||[]).push(arguments)},e[c].l=1*new Date,r=t.createElement(a),s=t.getElementsByTagName(a)[0],r.async=1,r.src=n,s.parentNode.insertBefore(r,s)}(window,document,'script','/log/analytics.js','fa'),fa('create','UA-XXXX-Y',{alwaysSendReferrer:!0}),void 0===window.gAutoStart&&fa('send','pageview');
