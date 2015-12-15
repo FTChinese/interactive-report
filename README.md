@@ -1,8 +1,6 @@
 #Usage
 
-The project has a submodule [interactive-assets](https://github.com/FTChinese/interactive-assets). You need to clone recursively:
-
-`git clone --recursive https://github.com/FTChinese/special-report.git`
+`git clone https://github.com/FTChinese/special-report.git`
 
 Run `gulp serve` for development.
 
