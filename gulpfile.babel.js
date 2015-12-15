@@ -4,12 +4,7 @@ import gulpLoadPlugins from 'gulp-load-plugins';
 import browserSync from 'browser-sync';
 import del from 'del';
 import {stream as wiredep} from 'wiredep';
-const merge = require('merge-stream');
 const bourbon = require('bourbon').includePaths;
-
-/*const gutil           = require('gulp-util');
-const rimraf          = require('rimraf');
-const through         = require('through2');*/
 
 const path            = require('path');
 const $               = gulpLoadPlugins();
@@ -89,15 +84,11 @@ gulp.task('html', ['styles'/*, 'scripts'*/], () => {
     .pipe($.useref({searchPath: ['.tmp', 'app', '.']}))
     .pipe($.if('*.js', $.uglify()))
     .pipe($.if('*.css', $.minifyCss({compatibility: '*'})))
-    /*.pipe($.rev())*/
     .pipe($.if('*.html', $.smoosher({
       base: 'app'
     })))
     .pipe($.if('*.html', $.htmlReplace(config.staticAssets)))
-    /*.pipe($.revReplace())*/
-    .pipe(gulp.dest('dist'))
-    /*.pipe($.rev.manifest())
-    .pipe(gulp.dest('dist'))*/;
+    .pipe(gulp.dest('dist'));
 });
 
 gulp.task('images', () => {
@@ -203,27 +194,5 @@ gulp.task('html:deploy', function() {
     .pipe(gulp.dest(config.deploy.htmlDest));
 });
 
-/*function cleaner() {
-    return through.obj(function(file, enc, cb){
-        rimraf( path.resolve( (file.cwd || process.cwd()), file.path), function (err) {
-            if (err) {
-                this.emit('error', new gutil.PluginError('Cleanup old files', err));
-            }
-            this.push(file);
-            cb();
-        }.bind(this));
-    });
-}
-
-gulp.task('outdated', function() {
-  let cssPath = config.deploy.assetsDest + projectName + '/styles/bundle-*.css';
-  let jsPath = config.deploy.assetsDest + projectName + '/scripts/bundle-*.js';
-
-    gulp.src([cssPath, jsPath], {read: false})
-        .pipe( $.revOutdated(1) ) // leave 1 latest asset file
-        .pipe( cleaner() );
-
-    return;
-});*/
 
 gulp.task('deploy', $.sequence('clean', 'build', ['assets:deploy', 'html:deploy']));

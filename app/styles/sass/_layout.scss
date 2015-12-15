@@ -2,6 +2,7 @@
 .text-over-media {
   position: relative;
   color: $white;
+  padding-top: $headerHeight;
   * {
     position: relative;
   }
@@ -46,7 +47,6 @@
   h1 {
     margin: 0;
   }
-  padding-bottom: 60px;
   box-sizing: border-box;
   .text-wrapper {
     text-shadow: $textShadow-1;

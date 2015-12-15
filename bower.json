@@ -3,7 +3,6 @@
   "private": true,
   "dependencies": {
     "jquery": "~2.1.4",
-    "rxjs": "~4.0.6",
     "async": "~1.5.0",
     "ftc-icons": "~1.0.0",
     "jquery.scrollTo": "~2.1.2",
