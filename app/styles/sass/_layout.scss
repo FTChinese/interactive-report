@@ -1,6 +1,10 @@
 /* General */
 .text-over-media {
+  position: relative;
   color: $white;
+  * {
+    position: relative;
+  }
   h1 {
       font-size: 100px;
       line-height: 1.2;
@@ -24,8 +28,10 @@
 .content-column  {
   max-width: 600px;
   margin: 0 auto;
+  padding: 0 5px;
   p {
     margin: .75em auto;
+    line-height: 2em;
   }
   aside {
     text-align: center;
