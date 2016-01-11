@@ -1,12 +1,11 @@
 {
-  "name": "special-report",
+  "name": "interactive-report",
   "private": true,
   "dependencies": {
     "jquery": "~2.1.4",
-    "async": "~1.5.0",
-    "ftc-icons": "~1.0.0",
     "jquery.scrollTo": "~2.1.2",
     "normalize-css": "normalize.css#~3.0.3",
-    "ftc-share": "~0.0.6"
+    "ftc-share": "~0.1.4",
+    "ftc-icons": "~1.0.4"
   }
 }

@@ -1,15 +1,11 @@
 'use strict'
 $(function() {
-var sharelink = Object.create(Share);
-sharelink.init('.share-links');
 
 /* variables*/
 var $w = $(window);
 var pageName = window.location.pathname;
 var headerHeight = $('.header').height();
 var viewportHeight = $(window).height() - headerHeight;
-
-
 
 var $textOverMedia = $('.text-over-media');
 
