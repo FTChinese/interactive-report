@@ -1,9 +1,9 @@
 {
 	"src": {
-		"html": "app/*.html",
-		"scss": "app/styles/*.scss",
-		"js": "app/scripts/*.js",
-		"images": "app/images/*.{jpg,png,svg}"
+		"html": "client/*.html",
+		"scss": "client/main.scss",
+		"js": "client/main.js",
+		"images": "client/images/*.{jpg,png,svg}"
 	},
 	"dist": {
 		"css": "dist/styles/*.css",

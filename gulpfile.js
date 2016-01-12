@@ -78,6 +78,40 @@ gulp.task('scripts', function() {
   }
 });
 
+gulp.task('js', function() {
+  var b = browserify({
+    entries: 'client/main.js',
+    debug: true,
+    cache: {},
+    packageCache: {},
+    transform: [debowerify, babelify]
+  });
+
+  b.on('update', bundle);
+  b.on('log', $.util.log);
+
+  bundle();
+
+  function bundle(ids) {
+    $.util.log('Compiling JS...');
+    if (ids) {
+      console.log('Chnaged Files:\n' + ids);
+    }   
+    return b.bundle()
+      .on('error', function(err) {
+        $.util.log(err.message);
+        browserSync.notify('Browerify Error!')
+        this.emit('end')
+      })
+      .pipe(source('bundle.js'))
+      .pipe(buffer())
+      .pipe($.sourcemaps.init({loadMaps: true}))
+      .pipe($.sourcemaps.write('./'))
+      .pipe(gulp.dest('.tmp/scripts'))
+      .pipe(browserSync.stream({once:true}));
+  }
+});
+
 function lint(files, options) {
   return () => {
     return gulp.src(files)
@@ -96,13 +130,13 @@ const testLintOptions = {
 gulp.task('lint', lint('client/scripts/**/*.js'));
 gulp.task('lint:test', lint('test/spec/**/*.js', testLintOptions));
 
-gulp.task('html', ['styles', 'scripts'], () => {
+gulp.task('html', ['styles', 'js'], () => {
   return gulp.src(config.src.html)
-    .pipe($.useref({searchPath: ['.tmp', 'app', '.']}))
+    .pipe($.useref({searchPath: ['.tmp', 'client', '.']}))
     .pipe($.if('*.js', $.uglify()))
-    .pipe($.if('*.css', $.minifyCss({compatibility: '*'})))
+    .pipe($.if('*.css', $.cssnano()))
     .pipe($.if('*.html', $.smoosher({
-      base: 'app'
+      base: 'client'
     })))
     .pipe($.if('*.html', $.htmlReplace(config.staticAssets)))
     .pipe(gulp.dest('dist'));
@@ -120,8 +154,8 @@ gulp.task('images', () => {
 
 gulp.task('extras', () => {
   return gulp.src([
-    'app/*.*',
-    '!app/*.html'
+    'client/*.*',
+    '!client/*.html'
   ], {
     dot: true
   }).pipe(gulp.dest('dist'));
@@ -144,43 +178,27 @@ gulp.task('serve', ['styles', 'scripts'], () => {
   });
 
   gulp.watch([
-    'app/*.html',
-    'app/styles/*.css',
-    'app/scripts/**/*.js',
-    'app/images/**/*'
+    'client/*.html',
+    'client/styles/*.css',
+    'client/scripts/*.js',
+    'client/images/**/*'
   ]).on('change', reload);
 
   gulp.watch(['client/**/*.scss'], ['styles']);
+  gulp.watch(['client/*.js'], ['scripts'])
 });
 
+
 gulp.task('serve:dist', () => {
-  browserSync({
-    notify: false,
-    port: 9000,
+  browserSync.init({
     server: {
       baseDir: ['dist']
     }
   });
 });
 
-gulp.task('serve:test', () => {
-  browserSync({
-    notify: false,
-    port: 9000,
-    ui: false,
-    server: {
-      baseDir: 'test',
-      routes: {
-        '/bower_components': 'bower_components'
-      }
-    }
-  });
 
-  gulp.watch('test/spec/**/*.js').on('change', reload);
-  gulp.watch('test/spec/**/*.js', ['lint:test']);
-});
-
-gulp.task('build', ['lint', 'html', 'images', 'extras'], () => {
+gulp.task('build', ['lint', 'html', 'images'], () => {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 
@@ -203,7 +221,13 @@ gulp.task('html:deploy', function() {
   return gulp.src(config.dist.html)
     .pipe($.prefix(config.prefixUrl + projectName))
     .pipe($.rename({basename: projectName, extname: '.html'}))
-    .pipe($.minifyHtml())
+    .pipe($.htmlmin({
+      removeComments: true,
+      collapseWhitespace: true,
+      removeAttributeQuotes: true,
+      minifyJS: true,
+      minifyCSS: true
+    }))
     .pipe(gulp.dest(config.deploy.htmlDest));
 });
 

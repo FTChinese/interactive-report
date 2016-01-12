@@ -1,4 +1,7 @@
 'use strict'
+var oShare = require('ftc-share');
+oShare.buildAll();
+
 $(function() {
 
 /* variables*/
@@ -6,59 +9,59 @@ var $w = $(window);
 var pageName = window.location.pathname;
 var headerHeight = $('.header').height();
 var viewportHeight = $(window).height() - headerHeight;
-
-var $textOverMedia = $('.text-over-media');
-
+var $tocNav = $('.nav__toc').eq(0);
 
 //Get the image source of `.story-cover` and put it as the background of `.story-header` so that the picture could flow with resizing while `wechat` could capture this image as thumbnail.
 $('.story-cover').css('background-image', function() {
 	return 'url(' + $('.cover-image').attr('src') + ')';
 });
-/* Generate navigation. 
-Pass in the list container.
-Return an array container the link and the link's target.
-*/
-
-var $tocNav = $('.toc-nav').eq(0);
-var currentActive =' ';
-
-$tocNav.find('a').each(function() {
-	$(this).on('click', function(e) {
-		e.preventDefault();
-		var currentLink = $(e.target);
-		var targetId = currentLink.attr('href');
-		$(window).scrollTo($(targetId), 300);
-		currentLink.siblings().removeClass('active');
-		currentLink.addClass('active');
-		currentActive = currentLink;
-	});
-});
 
 /* Show/Hide Navigation */
-var $smallMenu = $('.small-menu');
-var $body = $('body');
-$body.on('load click touch', function() {
-	$tocNav.addClass('hide');
+showHideNav($('.small-menu'), $('.nav__toc'));
+setHeight($('.text-over-media'), viewportHeight);
+backToTop($('.to-top'));
+
+/* Generate navigation and deal with scrolled pagination */
+var navLinks = generateNav($('.nav__toc'), $('.nav-target'));
+
+var navTargetTops = getOffsetTop($('.nav-target')).toArray();
+
+var wScrolledTop = $w.scrollTop();
+var currentPage = onWhichPage(wScrolledTop, navTargetTops);
+var previousPage = currentPage;
+activeNavLink(currentPage, navLinks);
+logPages(pageName, currentPage);
+
+$w.on('scroll', function() {
+	var wScrolledTop = $w.scrollTop();
+	var currentPage = onWhichPage(wScrolledTop, navTargetTops);
+	if (previousPage !== currentPage) {		
+		previousPage = currentPage;
+		activeNavLink(currentPage, navLinks);
+		logPages(pageName, currentPage);
+	}
 });
 
-$smallMenu.on('click touch', function(e) {
-	$tocNav.toggleClass('hide');
-	e.stopPropagation();
-});
-
-$textOverMedia.each(function() {
-	$(this).height(viewportHeight);
-});
-
-$('.to-top').on('click', function(e){
-	e.preventDefault();
-	$(window).scrollTo(0, 1000);
-})
-
-var navLinks = $tocNav.find('a');
-
 
 });
+
+function activeNavLink(currentPage, navLinks) {
+	var currentNavLink = navLinks[currentPage - 1];
+	currentNavLink.addClass('active');
+	currentNavLink.siblings().removeClass('active');
+}
+
+function onWhichPage(x, arr) {
+//Initially you are on the page 1.
+	var j = 1;
+	for (var i = 0; i < arr.length; i++) {
+// If x > arr[i], you are on the page i+1.
+		if (x >= arr[i]) {
+			j = i+1;
+		}
+	}
+	return j;
+}
 
 function logPages(pageName, pageNumber) {
 	try {
@@ -70,4 +73,52 @@ function logPages(pageName, pageNumber) {
 	}	
 }
 
+function backToTop($elm) {
+	$elm.on('click', function(e){
+		e.preventDefault();
+		$(window).scrollTo(0, 1000);
+	});
+}
 
+function setHeight($elms, height) {
+	$elms.each(function() {
+		$(this).height(height);
+	});
+}
+
+function getOffsetTop($elms) {
+	return $elms.map(function() {
+		return /*var offsetTop =*/ $(this).offset().top;
+	});
+}
+
+function generateNav($navContainer, $navTargets) {
+	var navLinks = [];
+	$navTargets.each(function(i) {
+		var targetId = $(this).attr('id');
+		var link = $('<a/>', {
+			'href': '#' + targetId,
+			'click': function(e) {
+				e.preventDefault();
+				$(window).scrollTo(document.getElementById(targetId), 300);
+				$(e.target).addClass('active');
+				$(e.target).siblings().removeClass('active');
+			}
+		}).text(i+1);
+
+		$navContainer.append(link);
+		navLinks.push(link);
+	});	
+	return navLinks;
+}
+
+function showHideNav($elm, $navContainer) {
+	$('body').on('load click touch', function() {
+		$navContainer.addClass('hide-on-small');
+	});
+
+	$elm.on('click touch', function(e) {
+		$navContainer.toggleClass('hide-on-small');
+		e.stopPropagation();
+	});
+}

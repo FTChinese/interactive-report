@@ -50,7 +50,7 @@
 .small-menu {
 	display: none;
 }
-.toc-nav {
+.nav__toc {
 	position: fixed;
 	top: 0;
 	left: 50%;
@@ -68,43 +68,17 @@
 		color: $white;
 	}
 }
-.share-links {
+.o-share {
 	position: absolute;
 	right: 10px;
 	bottom: 0;
-	ul {
-		margin: 0;
-		padding: 0;
-	}
-	li {
-		display: inline-block;
-		padding: 0;
-		margin: 0 .5em;
-	}
-	a.share-link {
-		display: inline-block;
-		margin: 0;
-		padding: 0;
+	.o-share__action {
 		i {
-			background-repeat: no-repeat;
-			background-position: center center;
-			background-size: contain;
-			width: 30px;
-			height: 30px;
-			display: inline-block;	
+			background-color: #fff;
 		}
 		span {
 			display: none;
 		}
-	}
-	.icon-social-wechat {
-		background-image: $social-wechat-bg;
-	}
-	.icon-social-weibo {
-		background-image: $social-weibo-bg;
-	}
-	.icon-social-linkedin {
-		background-image: $social-linkedin-bg;
 	}
 }
 

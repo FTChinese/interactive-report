@@ -6,7 +6,7 @@
         font-style: normal;
         font-size: 1.5em;
     }
-	.share-links {
+	.o-share {
 		display: none;
 	}
 	.small-menu {
@@ -21,7 +21,7 @@
         background-repeat: no-repeat;
 		background-size: contain;
 	}
-	.toc-nav {
+	.nav__toc {
 		position: fixed;
 		top: $headerHeight;
 		left: auto;
@@ -45,7 +45,7 @@
 			}
 		}
 	}
-	.hide {
+	.hide-on-small {
 		display: none;
 	}
 /* end of header */
