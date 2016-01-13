@@ -163,7 +163,7 @@ gulp.task('serve:dist', () => {
   });
 });
 
-gulp.task('html', () => {
+gulp.task('html', function() {
   return gulp.src(config.src.html)
     .pipe($.useref({searchPath: ['.tmp', 'client', '.']}))
     .pipe($.if('*.js', $.uglify()))
