@@ -130,43 +130,6 @@ const testLintOptions = {
 gulp.task('lint', lint('client/scripts/**/*.js'));
 gulp.task('lint:test', lint('test/spec/**/*.js', testLintOptions));
 
-gulp.task('html', ['styles', 'js'], () => {
-  return gulp.src(config.src.html)
-    .pipe($.useref({searchPath: ['.tmp', 'client', '.']}))
-    .pipe($.if('*.js', $.uglify()))
-    .pipe($.if('*.css', $.cssnano()))
-    .pipe($.if('*.html', $.smoosher({
-      base: 'client'
-    })))
-    .pipe($.if('*.html', $.htmlReplace(config.staticAssets)))
-    .pipe(gulp.dest('dist'));
-});
-
-gulp.task('images', () => {
-  return gulp.src(config.src.images)
-    .pipe($.imagemin({
-      progressive: true,
-      interlaced: true,
-      svgoPlugins: [{cleanupIDs: false}]
-    }))
-    .pipe(gulp.dest('dist/images'));
-});
-
-gulp.task('extras', () => {
-  return gulp.src([
-    'client/*.*',
-    '!client/*.html'
-  ], {
-    dot: true
-  }).pipe(gulp.dest('dist'));
-});
-
-gulp.task('clean', function() {
-  return del(['.tmp', 'dist']).then(()=>{
-    console.log('.tmp and dist deleted');
-  });
-});
-
 gulp.task('serve', ['styles', 'scripts'], () => {
   browserSync.init({
     server: {
@@ -192,17 +155,56 @@ gulp.task('serve', ['styles', 'scripts'], () => {
 gulp.task('serve:dist', () => {
   browserSync.init({
     server: {
-      baseDir: ['dist']
+      baseDir: ['dist'],
+      routes: {
+        '/bower_components': 'bower_components'
+      }
     }
   });
 });
 
+gulp.task('html', () => {
+  return gulp.src(config.src.html)
+    .pipe($.useref({searchPath: ['.tmp', 'client', '.']}))
+    .pipe($.if('*.js', $.uglify()))
+    .pipe($.if('*.css', $.cssnano()))
+    .pipe($.if('*.html', $.smoosher({
+      base: 'client'
+    })))
+    .pipe($.if('*.html', $.htmlReplace(config.staticAssets)))
+    .pipe(gulp.dest('dist'));
+});
 
-gulp.task('build', ['lint', 'html', 'images'], () => {
+gulp.task('extras', () => {
+  return gulp.src([
+    'client/*.*',
+    '!client/*.html'
+  ], {
+    dot: true
+  }).pipe(gulp.dest('dist'));
+});
+
+gulp.task('images', () => {
+  return gulp.src(config.src.images)
+    .pipe($.imagemin({
+      progressive: true,
+      interlaced: true,
+      svgoPlugins: [{cleanupIDs: false}]
+    }))
+    .pipe(gulp.dest('dist/images'));
+});
+
+gulp.task('clean', function() {
+  return del(['.tmp', 'dist']).then(()=>{
+    console.log('.tmp and dist deleted');
+  });
+});
+
+gulp.task('build', ['lint', 'styles', 'js', 'images'], () => {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 
-gulp.task('default', $.sequence('clean', 'build'));
+gulp.task('default', $.sequence('clean', 'build', 'html'));
 
 //Go test server
 gulp.task('copy:test', function() {
