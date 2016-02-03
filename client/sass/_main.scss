@@ -2,7 +2,7 @@
 .text-over-media {
   position: relative;
   color: $white;
-  padding-top: $headerHeight;
+  height: 100vh;
   * {
     position: relative;
   }
@@ -11,13 +11,14 @@
       line-height: 1.2;
   }
   h2 {
-      font-size: 82px
+      font-size: 60px
   }
   p {
       font-size: 33.6px;
       margin: 0 auto;
   }
-  @include background-setting(fixed);
+
+  @include background-setting/*(fixed)*/;
   &::before {
     @include background-overlay;
   }
@@ -29,7 +30,7 @@
 .content-column  {
   max-width: 600px;
   margin: 0 auto;
-  padding: 0 5px;
+  padding: 0 17px;
   p {
     margin: .75em auto;
     line-height: 2em;
@@ -38,6 +39,7 @@
     text-align: center;
   }
 }
+
 
 /* Story header */
 .cover-image {
@@ -49,9 +51,12 @@
   }
   box-sizing: border-box;
   .text-wrapper {
+  -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);  
     text-shadow: $textShadow-1;
     text-align: center;
-    margin: 0 auto;
+    top: 50%;
+    left: 50%;
   }
   %byline {
     font-size: 18px;
@@ -74,7 +79,7 @@
       text-align: center; 
       padding-bottom: 50px;
       &::before {
-        content: "向下滚动";
+        content: "";
         display: block;
         font-size: 14px;
         color: #FFF;
@@ -107,6 +112,8 @@
     margin: 1em 0 0 0;
   }
 }
+
+
 
 /* story footer */
 .story-footer {
