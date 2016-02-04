@@ -140,7 +140,7 @@ gulp.task('serve:dist', function() {
   });
 });
 
-gulp.task('html', /*['styles', 'js'],*/ function() {
+gulp.task('html', ['styles', 'js'], function() {
   return gulp.src(config.src.html)
     .pipe($.useref({searchPath: ['.', '.tmp', 'client']}))
     .pipe($.if('*.js', $.uglify()))
@@ -186,7 +186,7 @@ gulp.task('copy:test', function() {
   return gulp.src('dist/**/*')
     .pipe(gulp.dest(config.test.dest + projectName));
 });
-gulp.task('dist:test', $.sequence('clean', 'build', 'copy:test'));
+gulp.task('dist:test', $.sequence('build', 'copy:test'));
 
 
 
@@ -211,4 +211,4 @@ gulp.task('deploy:html', function() {
 });
 
 
-gulp.task('deploy', $.sequence('clean', 'build', ['deploy:assets', 'deploy:html']));
+gulp.task('deploy', $.sequence('build', ['deploy:assets', 'deploy:html']));
