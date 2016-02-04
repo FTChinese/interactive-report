@@ -17,8 +17,9 @@
 	    "log": "http://static.ftchinese.com/js/log.js?v=6"
 	},
 	"deploy": {
-		"htmlDest": "../deploy/dev_www/frontend/tpl/special/",
-		"assetsDest": "../ft-interact/"
+		"html": "../deploy/dev_www/frontend/tpl/marketing/",
+		"js": "../deploy/dev_www/frontend/tpl/",
+		"css": "../deploy/dev_www/frontend/tpl/"
 	},
 	"test": {
 		"dest": "../interact/"

@@ -71,13 +71,10 @@
 .o-share {
 	position: absolute;
 	right: 10px;
-	bottom: 0;
+	bottom: 10px;
 	.o-share__action {
 		i {
 			background-color: #fff;
-		}
-		span {
-			display: none;
 		}
 	}
 }
