@@ -16,7 +16,7 @@
 		right: 15px;
 		width: 30px;
 		height: 30px;
-		background: sassvg(hamburger, $fillcolor: $white);
+		background: sassvg(hamburger, $fillcolor: oColorsGetPaletteColor('white'));
         background-position: center center;
         background-repeat: no-repeat;
 		background-size: contain;

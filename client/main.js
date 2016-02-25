@@ -1,6 +1,8 @@
 'use strict'
 var oShare = require('ftc-share');
 
+oShare.init();
+
 $(function() {
 
 /* variables*/
@@ -110,5 +112,3 @@ function showHideNav($elm, $navContainer) {
 		e.stopPropagation();
 	});
 }
-
-oShare.buildAll();

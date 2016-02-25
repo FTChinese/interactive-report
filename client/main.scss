@@ -1,16 +1,17 @@
-@import "bourbon";
+$o-share-is-silent: false;
+
 @import "ftc-icons/main";
 @import "ftc-share/main";
 
-@import "sass/variables";
-@import "sass/mixins";
-@import "sass/base";
-@import "sass/header";
-@import "sass/main";
-@import "sass/footer";
-@import "sass/ad";
-@import "sass/mobile";
+@import "scss/variables";
+@import "scss/mixins";
+@import "scss/base";
+@import "scss/header";
+@import "scss/main";
+@import "scss/footer";
+@import "scss/ad";
+@import "scss/mobile";
 
-@import "styles/backgrounds";
-@import "styles/custom";
+@import "scss/backgrounds";
+@import "scss/custom";
 

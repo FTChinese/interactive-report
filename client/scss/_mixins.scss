@@ -51,7 +51,8 @@
 	margin-#{$where}: $margin;
 }
 
-/* @mixin clearfix {
-	overflow: hidden;
-	*zoom: 1;
-} */
+@mixin clearfix{
+  clear: both;
+  content: "";
+  display: table;
+}

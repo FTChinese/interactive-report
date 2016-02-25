@@ -22,7 +22,7 @@
 	width: $height;
 	height: $height;
 	margin: $margin;
-	background-image: $brand-ftc;
+	background-image: oIconsGetDatauri(brand-ftc);
 	background-color: $ftpink;
 	background-position: left center;
 	background-repeat: no-repeat;
@@ -65,17 +65,15 @@
 		padding: 0 15px;
 	}
 	a.active {
-		color: $white;
+		color: oColorsGetPaletteColor('white');
 	}
 }
 .o-share {
 	position: absolute;
 	right: 10px;
 	bottom: 10px;
-	.o-share__action {
-		i {
-			background-color: #fff;
-		}
+	.o-share__action--url {
+		display: none;
 	}
 }
 

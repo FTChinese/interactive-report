@@ -1,9 +1,7 @@
 var path = require('path');
 var gulp = require('gulp');
 var browserSync = require('browser-sync').create();
-var reload = browserSync.reload;
 var del = require('del');
-var bourbon = require('bourbon').includePaths;
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var browserify = require('browserify');
@@ -11,39 +9,45 @@ var watchify = require('watchify');
 var debowerify = require('debowerify');
 var babelify = require('babelify');
 var cssnext = require('postcss-cssnext');
-var inlineSvg = require('postcss-inline-svg');
 var $ = require('gulp-load-plugins')();
 
 var config = require('./config.json');
 var projectName = path.basename(__dirname);
 
-gulp.task('styles', function () {
-  var svgPrefix = 'data:image/svg+xml;charset=utf-8,';
+gulp.task('inject', () => {
+  return gulp.src('client/index.html')
+    .pipe($.inject(gulp.src('client/data/*.csv'), {
+      starttag: '<!-- inject:data:{{ext}} -->',
+      transform: function(filePath, file) {
+        
+        return '<pre id="csvdata">\n' + file.contents.toString('utf8') + '\n</pre>';
+      }
+    }))
+    .pipe(gulp.dest('client'));
+});
+
+gulp.task('styles', function styles() {
+  const DEST = '.tmp/styles';
 
   return gulp.src('client/main.scss')
+    .pipe($.changed(DEST))
     .pipe($.plumber())
     .pipe($.sourcemaps.init({loadMaps:true}))
     .pipe($.sass({
-      outputStyle: 'expanded',/*'compressed',*/
+      outputStyle: 'expanded',
       precision: 10,
-      includePaths: ['bower_components', bourbon]
+      includePaths: ['bower_components']
     }).on('error', $.sass.logError))
     .pipe($.postcss([
       cssnext({
         features: {
           colorRgba: false
         }
-      }),
-      inlineSvg({
-        path: 'bower_components/ftc-icons/build',
-        transform: function(data, path, opts) {
-          return svgPrefix + encodeURIComponent(data);
-        }
       })
     ]))
     .pipe($.sourcemaps.write('./'))
-    .pipe(gulp.dest('.tmp/styles'))
-    .pipe(browserSync.stream({once: true}));
+    .pipe(gulp.dest(DEST))
+    .pipe(browserSync.stream());
 });
 
 gulp.task('scripts', function() {
@@ -82,54 +86,67 @@ gulp.task('scripts', function() {
 });
 
 gulp.task('js', function() {
+  const DEST = '.tmp/scripts/';
+
   var b = browserify({
     entries: 'client/main.js',
     debug: true,
     cache: {},
     packageCache: {},
-    transform: [debowerify, babelify]
+    transform: [babelify, debowerify]
   });
 
   return b.bundle()
     .on('error', function(err) {
       $.util.log(err.message);
-      browserSync.notify('Browerify Error!')
       this.emit('end')
     })
     .pipe(source('bundle.js'))
     .pipe(buffer())
     .pipe($.sourcemaps.init({loadMaps: true}))
     .pipe($.sourcemaps.write('./'))
-    .pipe(gulp.dest('.tmp/scripts'));
+    .pipe(gulp.dest(DEST));
 });
 
 gulp.task('lint', function() {
   return gulp.src('client/**/*.js')
-    .pipe($.eslint())
+    .pipe($.eslint({
+        extends: 'eslint:recommended',
+        globals: {
+          'd3': true,
+          'ga': true,
+          'fa': true
+        },
+        rules: {
+          semi: [2, "always"]
+        },
+        envs: [
+          'browser'
+        ]
+    }))
     .pipe($.eslint.format())
     .pipe($.eslint.failAfterError());  
 });
 
-gulp.task('serve', ['styles', 'scripts'], function () {
-  browserSync.init({
-    server: {
-      baseDir: ['.tmp', 'client'],
-      routes: {
-        '/bower_components': 'bower_components'
+gulp.task('serve', 
+  gulp.parallel(
+    'styles', 'scripts',
+
+    function serve() {
+    browserSync.init({
+      server: {
+        baseDir: ['.tmp', 'client'],
+        routes: {
+          '/bower_components': 'bower_components'
+        }
       }
-    }
-  });
+    });
 
-  gulp.watch([
-    'client/*.html',
-    'client/styles/*.css',
-    'client/scripts/*.js',
-    'client/images/**/*'
-  ]).on('change', reload);
-
-  gulp.watch(['client/**/*.scss'], ['styles']);
-  gulp.watch(['client/**/*.js'], ['scripts'])
-});
+    gulp.watch('client/**/*.{html,css,png,jpg}', browserSync.reload);
+    //gulp.watch('client/**/*.js', gulp.parallel('lint'));
+    gulp.watch(['client/**/*.scss'], gulp.parallel('styles'));
+  })
+);
 
 
 gulp.task('serve:dist', function() {
@@ -140,25 +157,21 @@ gulp.task('serve:dist', function() {
   });
 });
 
-gulp.task('html', ['styles', 'js'], function() {
-  return gulp.src(config.src.html)
+/* build */
+gulp.task('html', function() {
+  return gulp.src('client/index.html')
     .pipe($.useref({searchPath: ['.', '.tmp', 'client']}))
     .pipe($.if('*.js', $.uglify()))
     .pipe($.if('*.css', $.cssnano()))
-    .pipe($.if('*.html', $.smoosher({
-      base: 'client'
-    })))
-    .pipe($.if('*.html', $.htmlReplace(config.staticAssets)))
+    .pipe($.if('*.html', $.htmlReplace(config.static)))
     .pipe(gulp.dest('dist'));
 });
 
 gulp.task('extras', function () {
-  return gulp.src([
-    'client/*.*',
-    '!client/*.html'
-  ], {
+  return gulp.src(['client/**/*.{js,css,csv}', "!client/*.js"], {
     dot: true
-  }).pipe(gulp.dest('dist'));
+  })
+  .pipe(gulp.dest('dist'));
 });
 
 gulp.task('images', function () {
@@ -171,13 +184,19 @@ gulp.task('images', function () {
     .pipe(gulp.dest('dist/images'));
 });
 
+gulp.task('smoosh', function() {
+  return gulp.src('dist/index.html')
+    .pipe($.smoosher())
+    .pipe(gulp.dest('dist'));
+});
+
 gulp.task('clean', function() {
   return del(['.tmp', 'dist']).then(()=>{
     console.log('.tmp and dist deleted');
   });
 });
 
-gulp.task('build', $.sequence('clean', ['html', 'images']));
+gulp.task('build', gulp.series('clean', gulp.parallel('styles', 'js', 'images', 'extras'), 'html', 'smoosh'));
 
 
 
@@ -186,18 +205,17 @@ gulp.task('copy:test', function() {
   return gulp.src('dist/**/*')
     .pipe(gulp.dest(config.test.dest + projectName));
 });
-gulp.task('dist:test', $.sequence('build', 'copy:test'));
 
 
 
-//Go Online. Run `gulp dist`
-gulp.task('deploy:asset', function() {
-  return gulp.src(['dist/**/*', '!dist/*.html'])
-    .pipe(gulp.dest(config.deploy.assetsDest + projectName))
+/**********deploy***********/
+gulp.task('deploy:assets', function() {
+  return gulp.src(['dist/**/*', '!dist/index.html'])
+    .pipe(gulp.dest(config.deploy.assets + projectName))
 });
 
 gulp.task('deploy:html', function() {
-  return gulp.src(config.dist.html)
+  return gulp.src('dist/index.html')
     .pipe($.prefix(config.prefixUrl + projectName))
     .pipe($.rename({basename: projectName, extname: '.html'}))
     .pipe($.htmlmin({
@@ -207,8 +225,9 @@ gulp.task('deploy:html', function() {
       minifyJS: true,
       minifyCSS: true
     }))
-    .pipe(gulp.dest(config.deploy.htmlDest));
+    //.pipe(gulp.dest('./'));
+    .pipe(gulp.dest(config.deploy.index));
 });
 
 
-gulp.task('deploy', $.sequence('build', ['deploy:assets', 'deploy:html']));
+gulp.task('deploy', gulp.series('build', gulp.parallel('deploy:assets', 'deploy:html')));

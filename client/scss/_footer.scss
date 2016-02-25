@@ -33,7 +33,7 @@
 		border-top: 0;
 		border-left: 15px solid transparent;
 		border-right: 15px solid transparent;
-		border-bottom: 20px solid $white;
+		border-bottom: 20px solid oColorsGetPaletteColor('white');
 		position: absolute;
 		top: 0;
 		left: 0;

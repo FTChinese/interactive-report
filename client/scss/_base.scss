@@ -31,7 +31,8 @@ a {
 .container {
   margin: 0 auto;
   text-align: left;
-  @include clearfix;
+  overflow: hidden;
+  *zoom: 1;
 }
 p {
   margin: 1em 0;

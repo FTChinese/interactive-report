@@ -1,7 +1,7 @@
 /* General */
 .text-over-media {
   position: relative;
-  color: $white;
+  color: oColorsGetPaletteColor('white');
   height: 100vh;
   * {
     position: relative;
@@ -98,7 +98,7 @@
         left: 50%;
         bottom: 0px;    
         margin-left: -36px;   
-        background-image:sassvg(arrow-down, $fillcolor: $white);
+        background-image:url("icons/arrow-down");
         background-position: center center;
         background-repeat: no-repeat;
         background-size: 50px;
