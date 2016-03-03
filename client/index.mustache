@@ -19,7 +19,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" /> 
     <link rel="apple-touch-icon" href="http://s.ftimg.net/img/ipad_icon.png" />
-    <link href="http://s.ftimg.net/styles/images/favicon.ico" type="image/x-icon" rel="shortcut icon" />
+    <link href="/favicons/favicon.ico" type="image/x-icon" rel="shortcut icon" />
     <title>特别报道 - FT中文网</title>
     
     
@@ -27,17 +27,9 @@
     <link rel="stylesheet" type="text/css" href="bower_components/normalize-css/normalize.css">
     <link rel="stylesheet" type="text/css" href="styles/main.css">
     <!-- endbuild -->
-
-    <!-- smoosh -->
-    <!-- build:js scripts/ga.js -->
-    <script src="">
-    </script>
-    <!-- endbuild -->
-    <!-- build:js scripts/fa.js -->
-    <script>
-    </script>
-    <!-- endbuild -->
-    <!-- endsmoosh -->
+{{#analytics}}
+{{> views/analytics}}
+{{/analytics}}
 
     </head>
 
@@ -50,7 +42,7 @@
           <h1>
               <a class="header-logo" href="http://www.ftchinese.com/" alt="FT中文网" title="FT中文网">FT中文网</a>
               <a class="feature-title" href="#">特别报道</a>
-              <a class="series-title" href="#">老外看中国</a>
+              <a class="series-title" href="#">调查</a>
           </h1>
       </div>
 
@@ -64,22 +56,22 @@
   <main>
     <article class="story" role="main">
         <header id="nav-target-1" class="story-cover text-over-media nav-target">
-            
             <div class="text-wrapper">
-                <h1 class="headline">在沪外侨<br>眼中的上海</h1>
+                <h1 class="headline">The great land rush</h1>
 
-                <p class="lead">在高薪工作机会的吸引下，世界各地的人士纷纷涌入中国的商业之都。不过，是什么因素让他们留了下来？上海的外侨在这里讲述了他们的家庭生活、上海的街头小吃以及“逃离”这座城市的故事。</p>
-
-                <ol class="byline">
-                    <li>本文作者：帕提•沃德米尔(Patti Waldmeir)</li>
-                    <li>补充报道：张嫣</li>
-                </ol>    
+                <p class="lead">Myanmar: The dispossessed</p>  
             </div>
-
-            <!-- <div class="swipe-down"></div> -->
+            <div class="article__time-byline">
+              <time class="article__timestamp o-date" data-o-component="o-date" datetime="" title="">时间</time>
+              <p class="article__byline">作者</p>
+            </div> 
         </header>
 
         <section class="section-1">
+          <div class="section-cover text-over-media">
+                <p class="section-head">1. The Lost Fields</p>
+                <p class="section-lead">Michael Peel reports from Myanmar where the end of dictatorship has unleashed a struggle over land</p>
+          </div>
           <div class="content-column">
               <p>从马可•波罗(Marco Polo)和忽必烈(Kublai Khan)的时代开始，中国就一直对外国人有着一种吸引力——要说眼下哪座中国城市对外国人吸引力最大，恐怕非中国风最淡的上海莫属。</p>
               <p>用了几乎不到一代人的时间，上海就把自身从一座街道狭窄、建筑破旧、商业被数十年的共产主义体制拖垮的城市，改造为一座人口2300万、遍地摩天大厦和豪华商场的未来派大都市，成为无可争议的中国金融之都。在此期间，那些曾在上世纪把上海打造为“亚洲巴黎”的欧美人也回来了（与他们一同到来的还有成千上万日本人、韩国人、台湾人和新加坡人），试图帮助这座城市实现它在21世纪的梦想，即变身为“亚洲的纽约”。</p>
@@ -104,10 +96,8 @@
   <!-- section 2 -->
         <section id="nav-target-2" class="section-2 nav-target">
             <div class="section-cover text-over-media">
-                <div class="text-wrapper">
-                  <h2 class="section-head">职场规则</h2>
-                  <p class="section-lead">‘对西方人来说，在华工作需要具备一套特别的技能——有时甚至对其他东亚国家的人来说也是如此’</p>  
-                </div>                   
+                  <p class="section-head">职场规则</p>
+                  <p class="section-lead">‘对西方人来说，在华工作需要具备一套特别的技能——有时甚至对其他东亚国家的人来说也是如此’</p>
             </div>
 
             <div class="content-column">
@@ -152,10 +142,8 @@
   <!-- section 3 -->
         <section id="nav-target-3" class="section-3 nav-target">
             <div class="section-cover text-over-media">
-              <div class="text-wrapper">
-                <h2 class="section-head">文化，请拨1</h2>
+                <p class="section-head">文化，请拨1</p>
                 <p class="section-lead">‘在上海过西方式生活，比在其他任何中国城市都容易得多’</p>
-              </div>                 
             </div>
 
             <div class="content-column">
@@ -184,14 +172,18 @@
 
   <!-- The end -->    
     <section class="credits text-over-media">
-      <div class="text-wrapper">
           <h3>制作团队</h3>
           <ul>
               <li>作者：英国《金融时报》驻上海记者帕提•沃德米尔(Patti Waldmeir)；补充报道：张嫣</li>
               <li>视频与图片：鲍考什•阿尔吉尔达斯(Bakas Algirdas)</li>
               <li>视频编辑：保罗•帕斯夸尔(Paolo Pascual)</li>
-          </ul> 
-      </div>    
+          </ul>
+          <h3>摄影</h3>
+          <ul>
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+          </ul>
     </section>
   </main>
 
