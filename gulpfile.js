@@ -136,6 +136,14 @@ gulp.task('lint', function() {
     .pipe($.eslint.failAfterError());  
 });
 
+gulp.task('cachebust', function() {
+  return gulp.src('.tmp/index.html')
+    .pipe($.cacheBust({
+      type: 'timestamp'
+    }))
+    .pipe(gulp.dest('.tmp'));
+})
+
 gulp.task('serve', 
   gulp.parallel(
     'mustache', 'styles', 'scripts',
@@ -153,7 +161,7 @@ gulp.task('serve',
     gulp.watch('client/**/*.{css,png,jpg}', browserSync.reload);
     gulp.watch('client/index.mustache', gulp.parallel('mustache'));
     //gulp.watch('client/**/*.js', gulp.parallel('lint'));
-    gulp.watch(['client/**/*.scss'], gulp.parallel('styles'));
+    gulp.watch(['client/**/*.scss'], gulp.parallel('styles', 'cachebust'));
   })
 );
 
