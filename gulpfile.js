@@ -136,17 +136,14 @@ gulp.task('lint', function() {
     .pipe($.eslint.failAfterError());  
 });
 
-gulp.task('cachebust', function() {
-  return gulp.src('.tmp/index.html')
-    .pipe($.cacheBust({
-      type: 'timestamp'
-    }))
-    .pipe(gulp.dest('.tmp'));
-})
+gulp.task('copyjs', function() {
+  return gulp.src('client/scripts/**.js')
+    .pipe(gulp.dest('.tmp/scripts'));
+});
 
 gulp.task('serve', 
   gulp.parallel(
-    'mustache', 'styles', 'scripts',
+    'mustache', 'styles', 'scripts', 'copyjs',
 
     function serve() {
     browserSync.init({
@@ -161,14 +158,16 @@ gulp.task('serve',
     gulp.watch('client/**/*.{css,png,jpg}', browserSync.reload);
     gulp.watch('client/index.mustache', gulp.parallel('mustache'));
     //gulp.watch('client/**/*.js', gulp.parallel('lint'));
-    gulp.watch(['client/**/*.scss'], gulp.parallel('styles', 'cachebust'));
   })
 );
 
 gulp.task('serve:dist', function() {
   browserSync.init({
     server: {
-      baseDir: ['dist']
+      baseDir: ['dist'],
+      routes: {
+        '/bower_components': 'bower_components'
+      }
     }
   });
 });
@@ -176,15 +175,16 @@ gulp.task('serve:dist', function() {
 /* build */
 gulp.task('html', function() {
   return gulp.src('.tmp/index.html')
-    .pipe($.useref({searchPath: ['.', '.tmp', 'client']}))
+/*    .pipe($.useref({searchPath: ['.', '.tmp']}))
     .pipe($.if('*.js', $.uglify()))
     .pipe($.if('*.css', $.cssnano()))
-    .pipe($.if('*.html', $.htmlReplace(config.static)))
+    .pipe($.if('*.html', $.htmlReplace(config.static)))*/
+    .pipe($.smoosher())
     .pipe(gulp.dest('dist'));
 });
 
 gulp.task('extras', function () {
-  return gulp.src(['client/**/*.{js,css,csv}', "!client/*.js"], {
+  return gulp.src('client/**/*.csv', {
     dot: true
   })
   .pipe(gulp.dest('dist'));
@@ -212,7 +212,7 @@ gulp.task('build', gulp.series('clean', gulp.parallel('mustache', 'styles', 'js'
 
 /**********deploy***********/
 gulp.task('deploy:assets', function() {
-  return gulp.src(['dist/**/*', '!dist/index.html'])
+  return gulp.src(['dist/**/*.{csv,png,jpg,svg}'])
     .pipe(gulp.dest(config.deploy.assets + projectName))
 });
 
@@ -226,6 +226,9 @@ gulp.task('deploy:html', function() {
       removeAttributeQuotes: true,
       minifyJS: true,
       minifyCSS: true
+    }))
+    .pipe($.sizereport({
+      gzip: true
     }))
     .pipe(gulp.dest(config.deploy.index));
 });
